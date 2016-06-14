@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "263193991027",
+    "firebase_url": "https://goodmood-c8b52.firebaseio.com",
+    "project_id": "goodmood-c8b52",
+    "storage_bucket": "goodmood-c8b52.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:263193991027:android:0b1f2d4c6db30c37",
+        "android_client_info": {
+          "package_name": "ch.xero88.goodmood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "263193991027-pre5hg438uqgkc77k5qdi3jq057b4k90.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGAhxTgkw8chouX2QoSNuBC2DFjr8K1Ao"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
