@@ -3,6 +3,7 @@ package ch.xero88.goodmood.Mood;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,7 +32,7 @@ public class FirebaseRepository implements MoodRepository {
     @Override
     public void getMoods(@NonNull final LoadMoodsCallback callback) {
 
-        ValueEventListener listener = new ValueEventListener() {
+        final ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<Mood> moods = new ArrayList<>();
@@ -40,6 +41,7 @@ public class FirebaseRepository implements MoodRepository {
                     moods.add(mood);
                 }
                 callback.onMoodLoaded(moods);
+
             }
 
             @Override
@@ -53,13 +55,50 @@ public class FirebaseRepository implements MoodRepository {
 
     }
 
+
+    @Override
+    public void getChangedMoods(@NonNull final ChangedMoodsCallback callback) {
+
+        final ChildEventListener listener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Mood mood = dataSnapshot.getValue(Mood.class);
+                callback.onMoodAdded(mood);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                // TODO: 07/07/2016
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                // TODO: 07/07/2016
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                // TODO: 07/07/2016
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // TODO: 07/07/2016
+            }
+
+        };
+        mRef.addChildEventListener(listener);
+
+    }
+
+
     @Override
     public void getMood(@NonNull String noteId, @NonNull GetMoodCallback callback) {
         // TODO: 05/07/2016  
     }
 
     @Override
-    public void saveMood(@NonNull Mood note) {
-        // TODO: 05/07/2016  
+    public void saveMood(@NonNull Mood mood) {
+        mRef.child(mood.getId()).setValue(mood);
     }
 }

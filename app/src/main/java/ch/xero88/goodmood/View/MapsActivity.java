@@ -8,13 +8,12 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.List;
@@ -25,6 +24,7 @@ import ch.xero88.goodmood.Mood.Mood;
 import ch.xero88.goodmood.Mood.MoodRepositories;
 import ch.xero88.goodmood.Mood.MoodRepository;
 import ch.xero88.goodmood.R;
+import ch.xero88.goodmood.Utils.StringUtil;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -46,6 +46,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        // TODO: 06/07/2016 delete
+        Mood mood = new Mood();
+        mood.setId(StringUtil.randomString(20));
+        Position position = new Position(46.233122, 7.360626);
+        mood.setPosition(position);
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String email = user.getEmail();
+            mood.setEmail(email);
+            mood.setDisplayName(user.getDisplayName());
+        }
+
+        MoodRepository repository = MoodRepositories.getFirebaseRepoInstance();
+        repository.saveMood(mood);
     }
 
     @Override
@@ -59,17 +75,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Set up cluster
         setUpClusterer();
 
-        // get moods
         repository = MoodRepositories.getFirebaseRepoInstance();
+        // get moods
+        /*
         repository.getMoods(new MoodRepository.LoadMoodsCallback() {
             @Override
             public void onMoodLoaded(List<Mood> moods) {
                 placeMoodsOnMap(moods);
+                Log.e(TAG, "Place moods on map (must be called once)");
             }
 
             @Override
             public void onMoodFailed() {
                 Log.e(TAG, "Moods failed");
+            }
+        });*/
+
+        // get new moods if any
+        repository.getChangedMoods(new MoodRepository.ChangedMoodsCallback() {
+
+            @Override
+            public void onMoodAdded(Mood mood) {
+                placeMoodOnMap(mood);
+                Log.e(TAG, "Place a mood");
+            }
+
+            @Override
+            public void onMoodChanged(Mood mood) {
+
+            }
+
+            @Override
+            public void onMoodRemoved(Mood moods) {
+
+            }
+
+            @Override
+            public void onMoodMoved(Mood mood) {
+
+            }
+
+            @Override
+            public void onCancelled() {
+
             }
         });
     }
@@ -89,10 +137,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMarkerClickListener(mClusterManager);
     }
 
+    private void placeMoodOnMap(Mood mood) {
+        mClusterManager.addItem(mood);
+        mClusterManager.cluster();
+    }
+
     private void placeMoodsOnMap(List<Mood> moods) {
 
+        // place on map moods
         for (Mood mood: moods) {
-            mClusterManager.addItem(mood);
+            placeMoodOnMap(mood);
         }
     }
 

@@ -2,6 +2,7 @@ package ch.xero88.goodmood.Mood;
 
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.Exclude;
 import com.google.maps.android.clustering.ClusterItem;
 
 import ch.xero88.goodmood.Data.Position;
@@ -13,8 +14,11 @@ public class Mood implements ClusterItem {
 
     private String id;
     private String name;
+    @Exclude
     private LatLng latLng;
     private Position position;
+    private String email;
+    private String displayName;
 
     public String getId() {
         return id;
@@ -37,6 +41,7 @@ public class Mood implements ClusterItem {
         return latLng;
     }
 
+    @Exclude
     public Position getMoodPosition() {
         return position;
     }
@@ -44,5 +49,21 @@ public class Mood implements ClusterItem {
     public void setPosition(Position position) {
         this.position = position;
         this.latLng = new LatLng(position.getLatitude(), position.getLongitude());
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 }

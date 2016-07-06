@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Good Mood</string>
     <string name="facebook_app_id">1732205433701723</string>
+    <string name="has_a_good_mood_here">has a good mood here !</string>
 </resources>

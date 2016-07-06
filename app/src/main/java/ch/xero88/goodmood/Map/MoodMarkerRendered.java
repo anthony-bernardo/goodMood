@@ -16,15 +16,18 @@ import ch.xero88.goodmood.R;
  */
 public class MoodMarkerRendered extends DefaultClusterRenderer<Mood> {
 
+    private Context context;
+
     public MoodMarkerRendered(Context context, GoogleMap map,
                               ClusterManager<Mood> clusterManager) {
         super(context, map, clusterManager);
+        this.context = context;
     }
 
     @Override
     protected void onBeforeClusterItemRendered(Mood item, MarkerOptions markerOptions) {
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_goodmood));
-        markerOptions.title(item.getId());
+        markerOptions.title(item.getDisplayName() + " " + context.getString(R.string.has_a_good_mood_here));
         super.onBeforeClusterItemRendered(item, markerOptions);
     }
 }
